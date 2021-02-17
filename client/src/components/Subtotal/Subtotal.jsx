@@ -1,15 +1,35 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./Subtotal.css";
 import CurrencyFormat from "react-currency-format";
+import { useStateValue } from "../../utils/StateProvider";
 
 const Subtotal = () => {
+  const [{ cart }, dispatch] = useStateValue();
+
+  const [total, setTotal] = useState(0);
+
+  useEffect(() => {
+    const prices = [];
+
+    for (let i = 0; i < cart.length; i++) {
+      prices.push(cart[i].price);
+    }
+
+    const reducer = (accumulator, currentValue) => accumulator + currentValue;
+
+    if (prices.length !== 0) {
+      const totalPrice = prices.reduce(reducer);
+      setTotal(totalPrice);
+    }
+  }, []);
+
   return (
     <div className="subtotal">
       <CurrencyFormat
         renderText={(value) => (
           <>
             <p>
-              Subtotal (0 items): <strong>0</strong>
+              Subtotal ({cart.length} items): <strong>{value}</strong>
             </p>
             <small className="subtotal-gift">
               <input type="checkbox" />
@@ -18,7 +38,7 @@ const Subtotal = () => {
           </>
         )}
         decimalScale={2}
-        value={0} // part of homework
+        value={total}
         displayType={"text"}
         thousandSeperator={true}
         prefix={"$"}
