@@ -27,10 +27,12 @@ const Header = () => {
 
       {/* HEADER NAV */}
       <div className="header-nav">
-        <div className="header-option">
-          <span className="header-option1">Hello, User</span>
-          <span className="header-option2">Sign In</span>
-        </div>
+        <Link to="/login">
+          <div className="header-option">
+            <span className="header-option1">Hello, User</span>
+            <span className="header-option2">Sign In</span>
+          </div>
+        </Link>
         <div className="header-option">
           <span className="header-option1">Returns</span>
           <span className="header-option2">& Orders</span>
@@ -42,7 +44,9 @@ const Header = () => {
         <Link to="/checkout">
           <div className="header-optionBasket">
             <ShoppingCartIcon />
-            <span className="header-option2 header-basketCount">{cart?.length}</span>
+            <span className="header-option2 header-basketCount">
+              {cart?.length}
+            </span>
           </div>
         </Link>
       </div>

@@ -20,8 +20,10 @@ const Subtotal = () => {
     if (prices.length !== 0) {
       const totalPrice = prices.reduce(reducer);
       setTotal(totalPrice);
+    } else {
+      setTotal(0);
     }
-  }, []);
+  }, [cart]);
 
   return (
     <div className="subtotal">
