@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./Login.css";
+import axios from "axios";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -10,8 +11,19 @@ const Login = () => {
     // DATABASE SIGN IN STUFF
   };
 
-  const register = (e) => {
-    // DATABASE REGISTER STUFF
+  const handleRegister = (e) => {
+    e.preventDefault();
+    axios
+      .post("/api/users", {
+        email: email,
+        password: password,
+      })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
@@ -50,7 +62,7 @@ const Login = () => {
           By signing-in you agree to the AMAZON CLONE Conditions of Use and
           Sale. Please see our Privacy Notice and our Interest-Based Ads Notice.
         </p>
-        <button className="login-registerButton" onClick={register}>
+        <button className="login-registerButton" onClick={handleRegister}>
           Create your Amazon Account
         </button>
       </div>
