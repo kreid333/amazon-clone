@@ -7,14 +7,24 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const signIn = (e) => {
-    // DATABASE SIGN IN STUFF
+  const handleSignIn = (e) => {
+    e.preventDefault();
+    axios
+      .post("/api/login", {
+        email: email,
+        password: password,
+      })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const handleRegister = (e) => {
-    e.preventDefault();
     axios
-      .post("/api/users", {
+      .post("/api/register", {
         email: email,
         password: password,
       })
@@ -54,7 +64,7 @@ const Login = () => {
               setPassword(e.target.value);
             }}
           />
-          <button type="submit" className="login-signInButton" onClick={signIn}>
+          <button type="submit" className="login-signInButton" onClick={handleSignIn}>
             Sign in
           </button>
         </form>
