@@ -18,7 +18,7 @@ const app = express();
 // MIDDLEWARE
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-// app.use(express.static("client/build"));
+app.use(express.static("client/build"));
 
 // CORS
 app.use(
@@ -84,9 +84,7 @@ app.listen(PORT, () => {
   console.log(`App is running on http://localhost:${PORT}`);
 });
 
-// REACT STATIC BUILD FOLDER AND GET ROUTE
-// app.use(express.static("client/build"));
-
-// app.get("*", (req, res) => {
-//   res.sendFile(path.join(__dirname, "./client/build/index.html"));
-// });
+// INDEX BUILD
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "./client/build/index.html"));
+});
