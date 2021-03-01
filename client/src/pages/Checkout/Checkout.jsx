@@ -5,7 +5,7 @@ import Subtotal from "../../components/Subtotal/Subtotal";
 import "./Checkout.css";
 
 const Checkout = () => {
-  const [{ cart }, dispatch] = useStateValue();
+  const [{ cart, user }, dispatch] = useStateValue();
   return (
     <div className="checkout">
       <div className="checkout-left">
@@ -15,10 +15,17 @@ const Checkout = () => {
           alt=""
         />
         <div>
+          <h3>Hello, {user?.data ? user?.data.email : "User"}</h3>
           <h2 className="checkout-title">Your Shopping Cart</h2>
         </div>
         {cart.map((item) => (
-          <CheckoutProduct id={item.id} title={item.title} image={item.image} price={item.price} rating={item.rating}/>
+          <CheckoutProduct
+            id={item.id}
+            title={item.title}
+            image={item.image}
+            price={item.price}
+            rating={item.rating}
+          />
         ))}
       </div>
       <div className="checkout-right">
