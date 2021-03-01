@@ -1,4 +1,5 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect } from "react";
 import Product from "../../components/Product/Product";
 import "./Home.css";
 

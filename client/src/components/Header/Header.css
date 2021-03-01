@@ -47,6 +47,11 @@
   color: white;
 }
 
+.header-option:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
 .header-option1 {
   font-size: 10px;
 }

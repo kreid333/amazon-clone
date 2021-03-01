@@ -4,7 +4,7 @@ const bcrypt = require("bcryptjs");
 const { User } = require("../models");
 const passport = require("passport");
 const router = express.Router();
-require("../config/passportConfig")(passport);
+// require("../config/passportConfig")(passport);
 
 router.post("/api/register", (req, res) => {
   db.User.findOne({ email: req.body.email }, async (err, doc) => {
@@ -38,9 +38,9 @@ router.post("/api/register", (req, res) => {
 
 router.post("/api/login", (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
-    console.log(user);
-    console.log(info);
-    console.log(req.body);
+    // console.log(user);
+    // console.log(info);
+    // console.log(req.body);
     if (err) {
       throw err;
     }
@@ -53,6 +53,7 @@ router.post("/api/login", (req, res, next) => {
           throw err;
         }
         res.send("Successfully authenticated");
+        console.log("req.user below");
         console.log(req.user);
       });
     }
@@ -60,7 +61,12 @@ router.post("/api/login", (req, res, next) => {
 });
 
 router.get("/api/user", (req, res) => {
-  console.log(req.body);
+  res.send(req.user);
+});
+
+router.get("/api/logout", (req, res) => {
+  res.send(req.logOut());
+  console.log("Successfully logged out");
 });
 
 module.exports = router;

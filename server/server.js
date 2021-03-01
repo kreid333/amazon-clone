@@ -18,7 +18,7 @@ const app = express();
 // MIDDLEWARE
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static("client/build"));
+// app.use(express.static("client/build"));
 
 // CORS
 app.use(
@@ -31,11 +31,6 @@ app.use(
 // COOKIE PARSER
 app.use(cookieParser("secretCode"));
 
-// PASSPORT
-app.use(passport.initialize());
-app.use(passport.session());
-// require("./config/passportConfig")(passport);
-
 // SESSION
 app.use(
   session({
@@ -47,6 +42,11 @@ app.use(
     saveUninitialized: true,
   })
 );
+
+// PASSPORT
+app.use(passport.initialize());
+app.use(passport.session());
+require("./config/passportConfig")(passport);
 
 // CONNECTING TO MONGODB DATABASE
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/amazonClone", {

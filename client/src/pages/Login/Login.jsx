@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import "./Login.css";
 import axios from "axios";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const history = useHistory();
 
   const handleSignIn = (e) => {
     e.preventDefault();
@@ -16,6 +17,11 @@ const Login = () => {
       })
       .then((response) => {
         console.log(response);
+        if (response.data === "Successfully authenticated") {
+          history.push("/");
+        } else {
+          alert("Invalid login credentials. Please try again.");
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -30,6 +36,11 @@ const Login = () => {
       })
       .then((response) => {
         console.log(response);
+        if (response.data === "User created.") {
+          history.push("/");
+        } else {
+          alert("Invalid register credentials. Please try again.");
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -64,7 +75,11 @@ const Login = () => {
               setPassword(e.target.value);
             }}
           />
-          <button type="submit" className="login-signInButton" onClick={handleSignIn}>
+          <button
+            type="submit"
+            className="login-signInButton"
+            onClick={handleSignIn}
+          >
             Sign in
           </button>
         </form>
