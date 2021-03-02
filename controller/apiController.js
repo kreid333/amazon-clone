@@ -48,7 +48,7 @@ router.post("/api/login", (req, res, next) => {
     if (!user) {
       res.send("No user exists.");
     } else {
-      req.logIn(user, (err) => {
+      req.login(user, (err) => {
         if (err) {
           throw err;
         }

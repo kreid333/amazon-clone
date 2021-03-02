@@ -8,8 +8,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const history = useHistory();
 
-  const handleSignIn = (e) => {
-    e.preventDefault();
+  const postRequest = () => {
     axios
       .post("/api/login", {
         email: email,
@@ -28,6 +27,11 @@ const Login = () => {
       });
   };
 
+  const handleSignIn = (e) => {
+    e.preventDefault();
+    postRequest();
+  };
+
   const handleRegister = (e) => {
     axios
       .post("/api/register", {
@@ -37,7 +41,7 @@ const Login = () => {
       .then((response) => {
         console.log(response);
         if (response.data === "User created.") {
-          history.push("/");
+          postRequest();
         } else {
           alert("Invalid register credentials. Please try again.");
         }
