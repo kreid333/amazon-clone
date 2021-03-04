@@ -7,6 +7,7 @@ import Login from "./pages/Login/Login";
 import { useEffect } from "react";
 import axios from "axios";
 import { useStateValue } from "./utils/StateProvider";
+import Payment from "./pages/Payment/Payment";
 
 function App() {
   const [{}, dispatch] = useStateValue();
@@ -43,6 +44,7 @@ function App() {
             <Header />
             <Checkout />
           </Route>
+          <Route exact path="/payment" component={Payment} />
           <Route path="/">
             <Header />
             <Home />
