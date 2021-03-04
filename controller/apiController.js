@@ -4,6 +4,9 @@ const bcrypt = require("bcryptjs");
 const { User } = require("../models");
 const passport = require("passport");
 const router = express.Router();
+const stripe = require("stripe")(
+  "sk_test_51IR8z9EtaHaa4E63gC0QEM4B1pCVrMBXov09QhT5bXe5cwnWBKNLWRlPHBOa0cW7pM4ingXVElYZFiOi9heiCpVQ00Ih1zrcfA"
+);
 // require("../config/passportConfig")(passport);
 
 router.post("/api/register", (req, res) => {
@@ -67,6 +70,23 @@ router.get("/api/user", (req, res) => {
 router.get("/api/logout", (req, res) => {
   res.send(req.logOut());
   console.log("Successfully logged out");
+});
+
+router.post("/payments/create", async (req, res) => {
+  try {
+    const total = req.query.total;
+    console.log("Payment request received for this amount", total);
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: total, // SUBUNITS OF CURRENCY
+      currency: "usd",
+    });
+
+    res.status(201).send({
+      clientSecret: paymentIntent.client_secret,
+    });
+  } catch {
+    console.log("There has been an error proccessing your payment");
+  }
 });
 
 module.exports = router;

@@ -2,22 +2,30 @@ import React, { useEffect, useState } from "react";
 import CheckoutProduct from "../../components/CheckoutProduct/CheckoutProduct";
 import { useStateValue } from "../../utils/StateProvider";
 import "./Payment.css";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import CurrencyFormat from "react-currency-format";
+import axios from "axios";
 
 const Payment = () => {
   const [{ cart, user }, dispatch] = useStateValue();
 
   const [total, setTotal] = useState(0);
 
+  const history = useHistory();
+
+  // STATES FOR STRIPE PAYMENT PROCESSING
+  const [succeeded, setSucceeded] = useState(false);
+  const [processing, setProcessing] = useState("");
   const [error, setError] = useState(null);
   const [disabled, setDisbaled] = useState(true);
+  const [clientSecret, setClientSecret] = useState(true);
 
   const stripe = useStripe();
   const elements = useElements();
 
   useEffect(() => {
+    // CHANGING CART LENGTH WHEN ITEMS ARE REMOVED FROM CART
     const prices = [];
 
     for (let i = 0; i < cart.length; i++) {
@@ -27,17 +35,47 @@ const Payment = () => {
     const reducer = (accumulator, currentValue) => accumulator + currentValue;
 
     if (prices.length !== 0) {
-      const totalPrice = prices.reduce(reducer);
+      let totalPrice = prices.reduce(reducer);
       setTotal(totalPrice);
-    } else {
-      setTotal(0);
+
+      // GENERATE THE CLIENT SECRET THAT ALLOWS US TO CHARGE A CUSTOMER
+      const getClientSecret = async () => {
+        const paymentTotal = Math.round(totalPrice * 100);
+        const response = await axios.post(
+          `/payments/create?total=${paymentTotal}`
+        );
+        setClientSecret(response.data.clientSecret);
+      };
+
+      getClientSecret();
     }
   }, [cart]);
 
-  const handleSubmit = () => {
-    // stripe stuff
+  console.log(`THE SECRET IS ${clientSecret}`);
+
+  // HANDLING SUBMISSION OF PAYMENT
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setProcessing(true);
+
+    // CONFIRMING CARD PAYMENT WITH SECRET AND DEFINING PAYMENT METHOD
+    const payload = await stripe
+      .confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: elements.getElement(CardElement),
+        },
+      })
+      .then(({ paymentIntent }) => {
+        // PAYMENT INTENT = PAYMENT CONFIRMATION
+        setSucceeded(true);
+        setError(null);
+        setProcessing(false);
+        // SWAPS PAGE INSTEAD OF PUSHING IT INTO HISTORY
+        history.replace("/orders");
+      });
   };
 
+  // HANADLING CHANGE OF CARD INPUT
   const handleChange = (e) => {
     setDisbaled(e.empty);
     setError(e.error ? e.error.message : "");
@@ -86,7 +124,7 @@ const Payment = () => {
                 <CurrencyFormat
                   renderText={(value) => (
                     <>
-                      <h3>Order Total: {value}</h3>
+                      <h4>Order Total: {value}</h4>
                     </>
                   )}
                   decimalScale={2}
@@ -95,7 +133,11 @@ const Payment = () => {
                   thousandSeperator={true}
                   prefix={"$"}
                 />
+                <button disabled={processing || disabled || succeeded}>
+                  <span>{processing ? <p>Processing</p> : "Buy Now"}</span>
+                </button>
               </div>
+              {error && <div>{error}</div>}
             </form>
           </div>
         </div>
