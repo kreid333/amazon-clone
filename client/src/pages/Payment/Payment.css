@@ -14,6 +14,10 @@
     text-decoration: none;
 }
 
+.payment-title {
+  margin-bottom: 10px;
+}
+
 .payment-section {
     display: flex;
     flex-direction: column;

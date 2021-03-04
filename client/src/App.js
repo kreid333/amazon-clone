@@ -8,6 +8,12 @@ import { useEffect } from "react";
 import axios from "axios";
 import { useStateValue } from "./utils/StateProvider";
 import Payment from "./pages/Payment/Payment";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
+
+const promise = loadStripe(
+  "pk_test_51IR8z9EtaHaa4E63aScDbgJFa3xF1VsK9NABpgWqWPj6iJgM2EJkqruiH76NUWYdMGq4hAW2lcN6TpdGc8hFBP96003OetuM8b"
+);
 
 function App() {
   const [{}, dispatch] = useStateValue();
@@ -44,7 +50,11 @@ function App() {
             <Header />
             <Checkout />
           </Route>
-          <Route exact path="/payment" component={Payment} />
+          <Route exact path="/payment">
+            <Elements stripe={promise}>
+              <Payment />
+            </Elements>
+          </Route>
           <Route path="/">
             <Header />
             <Home />
