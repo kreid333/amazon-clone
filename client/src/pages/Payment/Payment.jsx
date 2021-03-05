@@ -14,6 +14,8 @@ const Payment = () => {
 
   const history = useHistory();
 
+  console.log(user);
+
   // STATES FOR STRIPE PAYMENT PROCESSING
   const [succeeded, setSucceeded] = useState(false);
   const [processing, setProcessing] = useState("");
@@ -51,7 +53,7 @@ const Payment = () => {
     }
   }, [cart]);
 
-  console.log(`THE SECRET IS ${clientSecret}`);
+  // console.log(`THE SECRET IS ${clientSecret}`);
 
   // HANDLING SUBMISSION OF PAYMENT
   const handleSubmit = async (e) => {
@@ -67,9 +69,38 @@ const Payment = () => {
       })
       .then(({ paymentIntent }) => {
         // PAYMENT INTENT = PAYMENT CONFIRMATION
+        axios
+          .get("/api/user")
+          .then((response) => {
+            axios
+              .post("/orders", {
+                user: response.data.id ? response.data.id : null,
+                cart: cart,
+                amount: paymentIntent.amount,
+                created: paymentIntent.created,
+              })
+              .then(() => {
+                console.log("Successfully created order");
+              })
+              .catch((err) => {
+                if (err) {
+                  console.log(err);
+                }
+              });
+          })
+          .catch((err) => {
+            if (err) {
+              console.log(err);
+            }
+          });
+
         setSucceeded(true);
         setError(null);
         setProcessing(false);
+
+        dispatch({
+          type: "EMPTY_BASKET",
+        });
         // SWAPS PAGE INSTEAD OF PUSHING IT INTO HISTORY
         history.replace("/orders");
       });

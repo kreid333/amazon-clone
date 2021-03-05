@@ -89,4 +89,32 @@ router.post("/payments/create", async (req, res) => {
   }
 });
 
+router.post("/orders", (req, res) => {
+  db.Orders.create(req.body)
+    .then((response) => {
+      db.User.findOneAndUpdate(
+        { _id: response.user },
+        {
+          $push: { orders: response._id },
+        },
+        { new: true }
+      )
+        .populate("orders")
+        .then((data) => {
+          console.log(data);
+          console.log("Success!");
+        })
+        .catch((err) => {
+          if (err) {
+            console.log(err);
+          }
+        });
+    })
+    .catch((err) => {
+      if (err) {
+        console.log(err);
+      }
+    });
+});
+
 module.exports = router;
