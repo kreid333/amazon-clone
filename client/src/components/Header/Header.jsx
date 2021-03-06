@@ -78,10 +78,12 @@ const Header = () => {
             {user?.data !== "" || user === null ? "Sign Out" : "Sign In"}
           </span>
         </div>
-        <div className="header-option">
-          <span className="header-option1">Returns</span>
-          <span className="header-option2">& Orders</span>
-        </div>
+        <Link to="/orders">
+          <div className="header-option">
+            <span className="header-option1">Returns</span>
+            <span className="header-option2">& Orders</span>
+          </div>
+        </Link>
         <div className="header-option">
           <span className="header-option1">Your</span>
           <span className="header-option2">Prime</span>
