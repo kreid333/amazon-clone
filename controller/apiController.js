@@ -117,4 +117,16 @@ router.post("/orders", (req, res) => {
     });
 });
 
+router.get("/orders/:id", (req, res) => {
+  db.User.findById(req.params.id)
+    .populate("orders")
+    .then((response) => {
+      res.json(response);
+    })
+    .catch((err) => {
+      if (err) {
+        throw err;
+      }
+    });
+});
 module.exports = router;
