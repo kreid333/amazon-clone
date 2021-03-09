@@ -28,6 +28,7 @@ const Product = ({ id, title, image, price, rating }) => {
             ))}
         </div>
       </div>
+      <br/>
       <img src={image} alt="" />
       <button onClick={addToCart}>Add to Cart</button>
     </div>
