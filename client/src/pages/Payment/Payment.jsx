@@ -104,7 +104,7 @@ const Payment = () => {
           setProcessing(false);
 
           dispatch({
-            type: "EMPTY_BASKET",
+            type: "EMPTY_CART",
           });
           // SWAPS PAGE INSTEAD OF PUSHING IT INTO HISTORY
           history.replace("/orders");
