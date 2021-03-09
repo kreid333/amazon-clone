@@ -11,20 +11,24 @@ const stripe = require("stripe")(
 
 router.post("/api/register", (req, res) => {
   db.User.findOne({ email: req.body.email }, async (err, doc) => {
-    if (err) {
-      throw err;
-    }
-    if (doc) {
-      res.send("User already exists.");
-    }
-    if (!doc) {
-      const hashedPassword = await bcrypt.hash(req.body.password, 10);
-      const newUser = new User({
-        email: req.body.email,
-        password: hashedPassword,
-      });
-      await newUser.save();
-      res.send("User created.");
+    try {
+      if (err) {
+        throw err;
+      }
+      if (doc) {
+        res.send("User already exists.");
+      }
+      if (!doc) {
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+        const newUser = new User({
+          email: req.body.email,
+          password: hashedPassword,
+        });
+        await newUser.save();
+        res.send("User created.");
+      }
+    } catch (err) {
+      console.log(`There has been an error registering the user: ${err}`);
     }
   });
   //   db.User.create(req.body)
@@ -84,8 +88,8 @@ router.post("/payments/create", async (req, res) => {
     res.status(201).send({
       clientSecret: paymentIntent.client_secret,
     });
-  } catch {
-    console.log("There has been an error proccessing your payment");
+  } catch (err) {
+    console.log("There has been an error proccessing your payment", err);
   }
 });
 

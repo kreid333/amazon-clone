@@ -42,11 +42,15 @@ const Payment = () => {
 
       // GENERATE THE CLIENT SECRET THAT ALLOWS US TO CHARGE A CUSTOMER
       const getClientSecret = async () => {
-        const paymentTotal = Math.round(totalPrice * 100);
-        const response = await axios.post(
-          `/payments/create?total=${paymentTotal}`
-        );
-        setClientSecret(response.data.clientSecret);
+        try {
+          const paymentTotal = Math.round(totalPrice * 100);
+          const response = await axios.post(
+            `/payments/create?total=${paymentTotal}`
+          );
+          setClientSecret(response.data.clientSecret);
+        } catch (err) {
+          console.log(`There has been an error getting the secret: ${err}`);
+        }
       };
 
       getClientSecret();
@@ -57,53 +61,57 @@ const Payment = () => {
 
   // HANDLING SUBMISSION OF PAYMENT
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setProcessing(true);
+    try {
+      e.preventDefault();
+      setProcessing(true);
 
-    // CONFIRMING CARD PAYMENT WITH SECRET AND DEFINING PAYMENT METHOD
-    const payload = await stripe
-      .confirmCardPayment(clientSecret, {
-        payment_method: {
-          card: elements.getElement(CardElement),
-        },
-      })
-      .then(({ paymentIntent }) => {
-        // PAYMENT INTENT = PAYMENT CONFIRMATION
-        axios
-          .get("/api/user")
-          .then((response) => {
-            axios
-              .post("/orders", {
-                user: response.data.id ? response.data.id : null,
-                cart: cart,
-                amount: paymentIntent.amount,
-                created: paymentIntent.created,
-              })
-              .then(() => {
-                console.log("Successfully created order");
-              })
-              .catch((err) => {
-                if (err) {
-                  console.log(err);
-                }
-              });
-          })
-          .catch((err) => {
-            if (err) {
-              console.log(err);
-            }
+      // CONFIRMING CARD PAYMENT WITH SECRET AND DEFINING PAYMENT METHOD
+      const payload = await stripe
+        .confirmCardPayment(clientSecret, {
+          payment_method: {
+            card: elements.getElement(CardElement),
+          },
+        })
+        .then(({ paymentIntent }) => {
+          // PAYMENT INTENT = PAYMENT CONFIRMATION
+          axios
+            .get("/api/user")
+            .then((response) => {
+              axios
+                .post("/orders", {
+                  user: response.data.id ? response.data.id : null,
+                  cart: cart,
+                  amount: paymentIntent.amount,
+                  created: paymentIntent.created,
+                })
+                .then(() => {
+                  console.log("Successfully created order");
+                })
+                .catch((err) => {
+                  if (err) {
+                    console.log(err);
+                  }
+                });
+            })
+            .catch((err) => {
+              if (err) {
+                console.log(err);
+              }
+            });
+
+          setSucceeded(true);
+          setError(null);
+          setProcessing(false);
+
+          dispatch({
+            type: "EMPTY_BASKET",
           });
-
-        setSucceeded(true);
-        setError(null);
-        setProcessing(false);
-
-        dispatch({
-          type: "EMPTY_BASKET",
+          // SWAPS PAGE INSTEAD OF PUSHING IT INTO HISTORY
+          history.replace("/orders");
         });
-        // SWAPS PAGE INSTEAD OF PUSHING IT INTO HISTORY
-        history.replace("/orders");
-      });
+    } catch (err) {
+      console.log(`There has been an error submitting the payment: ${err}`);
+    }
   };
 
   // HANADLING CHANGE OF CARD INPUT
