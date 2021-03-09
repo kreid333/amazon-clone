@@ -33,22 +33,24 @@ const Login = () => {
   };
 
   const handleRegister = (e) => {
-    axios
-      .post("/api/register", {
-        email: email,
-        password: password,
-      })
-      .then((response) => {
-        console.log(response);
-        if (response.data === "User created.") {
-          postRequest();
-        } else {
-          alert("Invalid registration credentials. Please try again.");
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    if (email !== "" || password !== "") {
+      axios
+        .post("/api/register", {
+          email: email.trim(),
+          password: password.trim(),
+        })
+        .then((response) => {
+          console.log(response);
+          if (response.data === "User created.") {
+            postRequest();
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      alert("Invalid registration credentials. Please try again.");
+    }
   };
 
   return (
