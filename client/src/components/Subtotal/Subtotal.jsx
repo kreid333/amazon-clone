@@ -28,6 +28,14 @@ const Subtotal = () => {
     }
   }, [cart]);
 
+  const proceedToCheckout = () => {
+    if (cart.length > 0) {
+      history.push("/payment");
+    } else {
+      alert("There are no items in your cart to checkout!");
+    }
+  };
+
   return (
     <div className="subtotal">
       <CurrencyFormat
@@ -48,7 +56,7 @@ const Subtotal = () => {
         thousandSeperator={true}
         prefix={"$"}
       />
-      <button onClick={() => {history.push("/payment")}}>Proceed to Checkout</button>
+      <button onClick={proceedToCheckout}>Proceed to Checkout</button>
     </div>
   );
 };

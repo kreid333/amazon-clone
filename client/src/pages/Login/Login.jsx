@@ -43,7 +43,7 @@ const Login = () => {
         if (response.data === "User created.") {
           postRequest();
         } else {
-          alert("Invalid register credentials. Please try again.");
+          alert("Invalid registration credentials. Please try again.");
         }
       })
       .catch((err) => {
