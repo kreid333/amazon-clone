@@ -33,7 +33,7 @@ const Login = () => {
   };
 
   const handleRegister = (e) => {
-    if (email !== "" || password !== "") {
+    if (email !== "" && password !== "") {
       axios
         .post("/api/register", {
           email: email.trim(),
@@ -67,7 +67,7 @@ const Login = () => {
         <form>
           <h5>Email</h5>
           <input
-            type="text"
+            type="email"
             value={email}
             onChange={(e) => {
               setEmail(e.target.value);
